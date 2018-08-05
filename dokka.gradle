@@ -1,0 +1,182 @@
+/*
+ * Copyright 2018 Vorlonsoft LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+afterEvaluate { project ->
+    final boolean androidOs = DokkaUtils.with(project).isAndroid()
+    final boolean kotlinLanguage = DokkaUtils.with(project).isKotlin()
+    final String dokkaFatJarVersion = '0.9.17'
+    final String dokkaFatJarPath = 'org/jetbrains/dokka/dokka-fatjar'
+
+    task dokkaInitializer {
+        DokkaUtils.downloadLib("https://jcenter.bintray.com/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.pom",
+                dokkaFatJarPath, dokkaFatJarVersion, "dokka-fatjar-${dokkaFatJarVersion}.pom")
+        DokkaUtils.downloadLib("https://jcenter.bintray.com/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar",
+                dokkaFatJarPath, dokkaFatJarVersion, "dokka-fatjar-${dokkaFatJarVersion}.jar")
+    }
+
+    task dokkaJavadocsJar(type: GradleBuild) {
+        description 'Generate documentation by Dokka in Javadoc format.'
+        if (androidOs) {
+            tasks = ['androidDokkaJar']
+        } else {
+            tasks = ['dokkaJar']
+        }
+    }
+
+    if (androidOs) {
+        task androidDokka(type: Exec, dependsOn: dokkaInitializer) {
+            final byte srcDirsJavaNumber = (android.sourceSets.main.java.srcDirs != null) ? android.sourceSets.main.java.srcDirs.size() : 0
+            final byte srcDirsKotlinNumber = (kotlinLanguage && (android.sourceSets.main.kotlin.srcDirs != null)) ? android.sourceSets.main.kotlin.srcDirs.size() : 0
+            final byte classpathNumber = (android.getBootClasspath() != null) ? android.getBootClasspath().size() : 0
+            final String classpath = (classpathNumber > 0) ? android.getBootClasspath()[0] : ''
+            final String javaAPISpecificationLink = DokkaUtils.getJavaAPISpecificationLink()
+            if (srcDirsJavaNumber > 0) {
+                mkdir android.sourceSets.main.java.srcDirs[0]
+                if (srcDirsJavaNumber > 1) {
+                    mkdir android.sourceSets.main.java.srcDirs[1]
+                }
+            }
+            if (srcDirsKotlinNumber > 0) {
+                mkdir android.sourceSets.main.kotlin.srcDirs[0]
+            }
+            if (srcDirsJavaNumber + srcDirsKotlinNumber > 0) {
+                commandLine 'java', '-jar',
+                        "${System.properties['user.home']}/.m2/repository/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar",
+                        (srcDirsJavaNumber > 0) ? android.sourceSets.main.java.srcDirs[0] : '',
+                        (srcDirsJavaNumber > 1) ? android.sourceSets.main.java.srcDirs[1] : '',
+                        (srcDirsKotlinNumber > 0) ? android.sourceSets.main.kotlin.srcDirs[0] : '',
+                        '-output', "${buildDir}/javadoc", '-format', 'javadoc',
+                        (classpathNumber > 0) ? '-classpath' : '', (classpathNumber > 0) ? classpath : '',
+                        '-links', "https://developer.android.com/reference/^${android.sdkDirectory}/docs/reference/^${javaAPISpecificationLink}"
+            } else {
+                commandLine 'java', '-jar',
+                        "${System.properties['user.home']}/.m2/repository/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar"
+            }
+        }
+
+        task androidDokkaJar(type: Jar, dependsOn: androidDokka) {
+            from "${buildDir}/javadoc"
+        }
+    } else {
+        task coreDokka(type: Exec, dependsOn: dokkaInitializer) {
+            final byte srcDirsJavaNumber = (sourceSets.main.java.srcDirs != null) ? sourceSets.main.java.srcDirs.size() : 0
+            final byte srcDirsKotlinNumber = (kotlinLanguage && (sourceSets.main.kotlin.srcDirs != null)) ? sourceSets.main.kotlin.srcDirs.size() : 0
+            final String javaAPISpecificationLink = DokkaUtils.getJavaAPISpecificationLink()
+            if (srcDirsJavaNumber > 0) {
+                mkdir sourceSets.main.java.srcDirs[0]
+                if (srcDirsJavaNumber > 1) {
+                    mkdir sourceSets.main.java.srcDirs[1]
+                }
+            }
+            if (srcDirsKotlinNumber > 0) {
+                mkdir sourceSets.main.kotlin.srcDirs[0]
+            }
+            if (srcDirsJavaNumber + srcDirsKotlinNumber > 0) {
+                commandLine 'java', '-jar',
+                        "${System.properties['user.home']}/.m2/repository/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar",
+                        (srcDirsJavaNumber > 0) ? sourceSets.main.java.srcDirs[0] : '',
+                        (srcDirsJavaNumber > 1) ? sourceSets.main.java.srcDirs[1] : '',
+                        (srcDirsKotlinNumber > 0) ? sourceSets.main.kotlin.srcDirs[0] : '',
+                        '-output', "${buildDir}/javadoc", '-format', 'javadoc',
+                        '-links', "${javaAPISpecificationLink}"
+            } else {
+                commandLine 'java', '-jar',
+                        "${System.properties['user.home']}/.m2/repository/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar"
+            }
+        }
+
+        task dokkaJar(type: Jar, dependsOn: coreDokka) {
+            from "${buildDir}/javadoc"
+        }
+    }
+
+    tasks.withType(Jar) {
+        classifier = 'javadoc'
+        destinationDir = buildDir
+    }
+}
+
+final class DokkaUtils {
+
+    private static volatile DokkaUtils singleton = null
+
+    private final def project
+
+    private DokkaUtils(project) {
+        this.project = project
+    }
+
+    static DokkaUtils with(project) {
+        if (singleton == null) {
+            synchronized (DokkaUtils.class) {
+                if (singleton == null) {
+                    singleton = new DokkaUtils(project)
+                }
+            }
+        }
+        return singleton
+    }
+
+    static String getJavaAPISpecificationLink() {
+        if (JavaVersion.current().isJava10Compatible()) {
+            return 'https://docs.oracle.com/javase/10/docs/api/overview-summary.html'
+        } else if (JavaVersion.current().isJava9()) {
+            return 'https://docs.oracle.com/javase/9/docs/api/overview-summary.html'
+        } else if (JavaVersion.current().isJava8()) {
+            return 'https://docs.oracle.com/javase/8/docs/api/'
+        } else if (JavaVersion.current().isJava7()) {
+            return 'https://docs.oracle.com/javase/7/docs/api/'
+        } else if (JavaVersion.current().isJava6()) {
+            return 'https://docs.oracle.com/javase/6/docs/api/'
+        } else if (JavaVersion.current().isJava5()) {
+            return 'https://docs.oracle.com/javase/1.5.0/docs/api/'
+        } else {
+            return ''
+        }
+    }
+
+    static void downloadLib(String url, String path, String version, String name) {
+        File file = new File("${System.properties['user.home']}/.m2/repository/${path}/${version}/${name}")
+        file.parentFile.mkdirs()
+        if (!file.exists()) {
+            new URL(url).withInputStream { downloadStream ->
+                file.withOutputStream { fileOutputStream ->
+                    fileOutputStream << downloadStream
+                }
+            }
+        }
+    }
+
+    boolean isAndroid() {
+        return project.getPlugins().hasPlugin('com.android.application') ||
+                project.getPlugins().hasPlugin('com.android.library') ||
+                project.getPlugins().hasPlugin('android') ||
+                project.getPlugins().hasPlugin('android-library')
+    }
+
+    boolean isKotlin() {
+        return project.getPlugins().hasPlugin('kotlin') ||
+                project.getPlugins().hasPlugin('kotlin-platform-common') ||
+                project.getPlugins().hasPlugin('kotlin-platform-jvm') ||
+                project.getPlugins().hasPlugin('kotlin-platform-js') ||
+                project.getPlugins().hasPlugin('org.jetbrains.kotlin') ||
+                project.getPlugins().hasPlugin('org.jetbrains.kotlin.jvm') ||
+                project.getPlugins().hasPlugin('org.jetbrains.kotlin.js') ||
+                project.getPlugins().hasPlugin('kotlin2js') ||
+                project.getPlugins().hasPlugin('kotlin-android') ||
+                project.getPlugins().hasPlugin('kotlin-android-extensions')
+    }
+}
