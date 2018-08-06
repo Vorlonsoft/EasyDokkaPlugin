@@ -15,34 +15,34 @@
  */
 
 afterEvaluate { project ->
-    final boolean androidOs = DokkaUtils.with(project).isAndroid()
-    final boolean kotlinLanguage = DokkaUtils.with(project).isKotlin()
+    final boolean androidOs = EasyDokkaUtils.with(project).isAndroid()
+    final boolean kotlinLanguage = EasyDokkaUtils.with(project).isKotlin()
     final String dokkaFatJarVersion = '0.9.17'
     final String dokkaFatJarPath = 'org/jetbrains/dokka/dokka-fatjar'
 
-    task dokkaInitializer {
-        DokkaUtils.downloadLib("https://jcenter.bintray.com/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.pom",
+    task easyDokkaInitializer {
+        EasyDokkaUtils.downloadLib("https://jcenter.bintray.com/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.pom",
                 dokkaFatJarPath, dokkaFatJarVersion, "dokka-fatjar-${dokkaFatJarVersion}.pom")
-        DokkaUtils.downloadLib("https://jcenter.bintray.com/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar",
+        EasyDokkaUtils.downloadLib("https://jcenter.bintray.com/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar",
                 dokkaFatJarPath, dokkaFatJarVersion, "dokka-fatjar-${dokkaFatJarVersion}.jar")
     }
 
     task dokkaJavadocsJar(type: GradleBuild) {
         description 'Generate documentation by Dokka in Javadoc format.'
         if (androidOs) {
-            tasks = ['androidDokkaJar']
+            tasks = ['androidEasyDokkaJar']
         } else {
-            tasks = ['dokkaJar']
+            tasks = ['easyDokkaJar']
         }
     }
 
     if (androidOs) {
-        task androidDokka(type: Exec, dependsOn: dokkaInitializer) {
+        task androidEasyDokka(type: Exec, dependsOn: easyDokkaInitializer) {
             final byte srcDirsJavaNumber = (android.sourceSets.main.java.srcDirs != null) ? android.sourceSets.main.java.srcDirs.size() : 0
             final byte srcDirsKotlinNumber = (kotlinLanguage && (android.sourceSets.main.kotlin.srcDirs != null)) ? android.sourceSets.main.kotlin.srcDirs.size() : 0
             final byte classpathNumber = (android.getBootClasspath() != null) ? android.getBootClasspath().size() : 0
             final String classpath = (classpathNumber > 0) ? android.getBootClasspath()[0] : ''
-            final String javaAPISpecificationLink = DokkaUtils.getJavaAPISpecificationLink()
+            final String javaAPISpecificationLink = EasyDokkaUtils.getJavaAPISpecificationLink()
             if (srcDirsJavaNumber > 0) {
                 mkdir android.sourceSets.main.java.srcDirs[0]
                 if (srcDirsJavaNumber > 1) {
@@ -67,14 +67,16 @@ afterEvaluate { project ->
             }
         }
 
-        task androidDokkaJar(type: Jar, dependsOn: androidDokka) {
+        task androidEasyDokkaJar(type: Jar, dependsOn: androidEasyDokka) {
+            classifier = 'javadoc'
+            destinationDir = buildDir
             from "${buildDir}/javadoc"
         }
     } else {
-        task coreDokka(type: Exec, dependsOn: dokkaInitializer) {
+        task easyDokka(type: Exec, dependsOn: easyDokkaInitializer) {
             final byte srcDirsJavaNumber = (sourceSets.main.java.srcDirs != null) ? sourceSets.main.java.srcDirs.size() : 0
             final byte srcDirsKotlinNumber = (kotlinLanguage && (sourceSets.main.kotlin.srcDirs != null)) ? sourceSets.main.kotlin.srcDirs.size() : 0
-            final String javaAPISpecificationLink = DokkaUtils.getJavaAPISpecificationLink()
+            final String javaAPISpecificationLink = EasyDokkaUtils.getJavaAPISpecificationLink()
             if (srcDirsJavaNumber > 0) {
                 mkdir sourceSets.main.java.srcDirs[0]
                 if (srcDirsJavaNumber > 1) {
@@ -98,32 +100,29 @@ afterEvaluate { project ->
             }
         }
 
-        task dokkaJar(type: Jar, dependsOn: coreDokka) {
+        task easyDokkaJar(type: Jar, dependsOn: easyDokka) {
+            classifier = 'javadoc'
+            destinationDir = buildDir
             from "${buildDir}/javadoc"
         }
     }
-
-    tasks.withType(Jar) {
-        classifier = 'javadoc'
-        destinationDir = buildDir
-    }
 }
 
-final class DokkaUtils {
+final class EasyDokkaUtils {
 
-    private static volatile DokkaUtils singleton = null
+    private static volatile EasyDokkaUtils singleton = null
 
     private final def project
 
-    private DokkaUtils(project) {
+    private EasyDokkaUtils(project) {
         this.project = project
     }
 
-    static DokkaUtils with(project) {
+    static EasyDokkaUtils with(project) {
         if (singleton == null) {
-            synchronized (DokkaUtils.class) {
+            synchronized (EasyDokkaUtils.class) {
                 if (singleton == null) {
-                    singleton = new DokkaUtils(project)
+                    singleton = new EasyDokkaUtils(project)
                 }
             }
         }
