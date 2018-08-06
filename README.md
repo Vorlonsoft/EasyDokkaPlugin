@@ -1,7 +1,7 @@
 EasyDokkaPlugin
 ===============
 
-Gradle script plugin to generate documentation by Dokka documentation engine in Javadoc format for Java, Kotlin, Android and non-Android projects. It's very easy, you don't need to add to `dependencies` section additional `classpath` or think about compatibility issues, you don't need additional repositories also.
+Gradle Script plugin to generate documentation by Dokka documentation engine in Javadoc format for Java, Kotlin, Android and non-Android projects. It's very easy, you don't need to add to `dependencies` section additional `classpath` or think about compatibility issues, you don't need additional repositories also.
 
 ## Usage
 
@@ -10,7 +10,7 @@ Gradle script plugin to generate documentation by Dokka documentation engine in 
 It is up to you.
 
 
-### 2. Call the script
+### 2. Call the Script
 
 Add the following at the end of `build.gradle` of each sub-module that you wish to generate documentation:
 
