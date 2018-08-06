@@ -60,7 +60,7 @@ afterEvaluate { project ->
                         (srcDirsKotlinNumber > 0) ? android.sourceSets.main.kotlin.srcDirs[0] : '',
                         '-output', "${buildDir}/javadoc", '-format', 'javadoc',
                         (classpathNumber > 0) ? '-classpath' : '', (classpathNumber > 0) ? classpath : '',
-                        '-links', "https://developer.android.com/reference/^${javaAPISpecificationLink}^^${android.sdkDirectory}/docs/reference/"
+                        '-links', "https://developer.android.com/reference/^${android.sdkDirectory}/docs/reference/^${javaAPISpecificationLink}"
             } else {
                 commandLine 'java', '-jar',
                         "${System.properties['user.home']}/.m2/repository/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar"
