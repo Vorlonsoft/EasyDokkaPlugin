@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
+Class EasyDokkaUtils = new GroovyClassLoader(getClass().getClassLoader()).parseClass(EasyDokkaInitializer.downloadGroovyClass('https://raw.github.com/Vorlonsoft/EasyDokkaPlugin/master/EasyDokkaUtils.groovy', 'EasyDokkaUtils.groovy'))
+
 afterEvaluate { project ->
     final boolean androidOs = EasyDokkaUtils.with(project).isAndroid()
     final boolean kotlinLanguage = EasyDokkaUtils.with(project).isKotlin()
     final String dokkaFatJarVersion = '0.9.17'
     final String dokkaFatJarPath = 'org/jetbrains/dokka/dokka-fatjar'
+    final String javaAPISpecificationLink = EasyDokkaUtils.getJavaAPISpecificationLink(JavaVersion.current().toString())
 
     task easyDokkaInitializer {
         EasyDokkaUtils.downloadLib("https://jcenter.bintray.com/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.pom",
@@ -42,7 +45,6 @@ afterEvaluate { project ->
             final byte srcDirsKotlinNumber = (kotlinLanguage && (android.sourceSets.main.kotlin.srcDirs != null)) ? android.sourceSets.main.kotlin.srcDirs.size() : 0
             final byte classpathNumber = (android.getBootClasspath() != null) ? android.getBootClasspath().size() : 0
             final String classpath = (classpathNumber > 0) ? android.getBootClasspath()[0] : ''
-            final String javaAPISpecificationLink = EasyDokkaUtils.getJavaAPISpecificationLink()
             if (srcDirsJavaNumber > 0) {
                 mkdir android.sourceSets.main.java.srcDirs[0]
                 if (srcDirsJavaNumber > 1) {
@@ -76,7 +78,6 @@ afterEvaluate { project ->
         task easyDokka(type: Exec, dependsOn: easyDokkaInitializer) {
             final byte srcDirsJavaNumber = (sourceSets.main.java.srcDirs != null) ? sourceSets.main.java.srcDirs.size() : 0
             final byte srcDirsKotlinNumber = (kotlinLanguage && (sourceSets.main.kotlin.srcDirs != null)) ? sourceSets.main.kotlin.srcDirs.size() : 0
-            final String javaAPISpecificationLink = EasyDokkaUtils.getJavaAPISpecificationLink()
             if (srcDirsJavaNumber > 0) {
                 mkdir sourceSets.main.java.srcDirs[0]
                 if (srcDirsJavaNumber > 1) {
@@ -93,7 +94,7 @@ afterEvaluate { project ->
                         (srcDirsJavaNumber > 1) ? sourceSets.main.java.srcDirs[1] : '',
                         (srcDirsKotlinNumber > 0) ? sourceSets.main.kotlin.srcDirs[0] : '',
                         '-output', "${buildDir}/javadoc", '-format', 'javadoc',
-                        '-links', "${javaAPISpecificationLink}"
+                        '-links', javaAPISpecificationLink
             } else {
                 commandLine 'java', '-jar',
                         "${System.properties['user.home']}/.m2/repository/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar"
@@ -108,74 +109,23 @@ afterEvaluate { project ->
     }
 }
 
-final class EasyDokkaUtils {
+final class EasyDokkaInitializer {
 
-    private static volatile EasyDokkaUtils singleton = null
-
-    private final def project
-
-    private EasyDokkaUtils(project) {
-        this.project = project
+    private EasyDokkaInitializer() {
+        throw new AssertionError()
     }
 
-    static EasyDokkaUtils with(project) {
-        if (singleton == null) {
-            synchronized (EasyDokkaUtils.class) {
-                if (singleton == null) {
-                    singleton = new EasyDokkaUtils(project)
-                }
-            }
-        }
-        return singleton
-    }
-
-    static String getJavaAPISpecificationLink() {
-        if (JavaVersion.current().isJava10Compatible()) {
-            return 'https://docs.oracle.com/javase/10/docs/api/overview-summary.html'
-        } else if (JavaVersion.current().isJava9()) {
-            return 'https://docs.oracle.com/javase/9/docs/api/overview-summary.html'
-        } else if (JavaVersion.current().isJava8()) {
-            return 'https://docs.oracle.com/javase/8/docs/api/'
-        } else if (JavaVersion.current().isJava7()) {
-            return 'https://docs.oracle.com/javase/7/docs/api/'
-        } else if (JavaVersion.current().isJava6()) {
-            return 'https://docs.oracle.com/javase/6/docs/api/'
-        } else if (JavaVersion.current().isJava5()) {
-            return 'https://docs.oracle.com/javase/1.5.0/docs/api/'
-        } else {
-            return ''
-        }
-    }
-
-    static void downloadLib(String url, String path, String version, String name) {
-        File file = new File("${System.properties['user.home']}/.m2/repository/${path}/${version}/${name}")
+    static File downloadGroovyClass(String url, String name) {
+        File file = new File("${System.properties['user.home']}/.m2/repository/com/vorlonsoft/EasyDokkaPlugin/${name}")
         file.parentFile.mkdirs()
-        if (!file.exists()) {
-            new URL(url).withInputStream { downloadStream ->
-                file.withOutputStream { fileOutputStream ->
-                    fileOutputStream << downloadStream
-                }
+        if (file.exists()) {
+            file.delete()
+        }
+        new URL(url).withInputStream { downloadStream ->
+            file.withOutputStream { fileOutputStream ->
+                fileOutputStream << downloadStream
             }
         }
-    }
-
-    boolean isAndroid() {
-        return project.getPlugins().hasPlugin('com.android.application') ||
-                project.getPlugins().hasPlugin('com.android.library') ||
-                project.getPlugins().hasPlugin('android') ||
-                project.getPlugins().hasPlugin('android-library')
-    }
-
-    boolean isKotlin() {
-        return project.getPlugins().hasPlugin('kotlin') ||
-                project.getPlugins().hasPlugin('kotlin-platform-common') ||
-                project.getPlugins().hasPlugin('kotlin-platform-jvm') ||
-                project.getPlugins().hasPlugin('kotlin-platform-js') ||
-                project.getPlugins().hasPlugin('org.jetbrains.kotlin') ||
-                project.getPlugins().hasPlugin('org.jetbrains.kotlin.jvm') ||
-                project.getPlugins().hasPlugin('org.jetbrains.kotlin.js') ||
-                project.getPlugins().hasPlugin('kotlin2js') ||
-                project.getPlugins().hasPlugin('kotlin-android') ||
-                project.getPlugins().hasPlugin('kotlin-android-extensions')
+        return file
     }
 }
