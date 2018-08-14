@@ -44,14 +44,26 @@ There are optional properties which can be set:
 #### Dokka fatjar version
 
 ```properties
-DOKKA_FATJAR_VERSION (default is "0.9.17")
+DOKKA_FATJAR_VERSION (default is ${latestVersion})
 ```
+
+${latestVersion} is 0.9.17
 
 #### Dokka output format
 
 ```properties
 DOKKA_OUTPUT_FORMAT (default is "javadoc")
 ```
+
+**Options:**
+
+  * `html` - minimalistic html format used by default
+  * `javadoc` - Dokka mimic to javadoc
+  * `html-as-java` - as `html` but using java syntax
+  * `markdown` - Markdown structured as `html`
+    * `gfm` - GitHub flavored markdown
+    * `jekyll` - Jekyll compatible markdown
+  * `kotlin-website` - internal format used for documentation on *kotlinlang.org*
 
 ## Our other pligins
 
