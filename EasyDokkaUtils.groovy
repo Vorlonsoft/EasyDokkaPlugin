@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
+/**
+ * <p>EasyDokkaPlugin is a Gradle Script plugin to generate documentation by Dokka
+ * documentation engine in Javadoc or other formats for Java, Kotlin, Android and 
+ * non-Android projects. It's very easy, you don't need to add to dependencies 
+ * section additional classpath or think about compatibility issues, you don't 
+ * need additional repositories also.</p>
+ * <p>EasyDokkaUtils Class - utility class, thread-safe and a fast singleton
+ * implementation.</p>
+ *
+ * @author   Alexander Savin
+ * @since    1.1.0 Yokohama
+ */
+
 final class EasyDokkaUtils {
 
     private static volatile EasyDokkaUtils singleton = null
@@ -24,6 +37,12 @@ final class EasyDokkaUtils {
         this.project = project
     }
 
+    /**
+     * Only method to get singleton object of EasyDokkaUtils Class
+     *
+     * @param project project
+     * @return thread-safe singleton
+     */
     static EasyDokkaUtils with(project) {
         if (singleton == null) {
             synchronized (EasyDokkaUtils.class) {
@@ -35,6 +54,32 @@ final class EasyDokkaUtils {
         return singleton
     }
 
+    /**
+     * Downloads library and puts it to local repository.
+     *
+     * @param url library url
+     * @param path local repository path
+     * @param version library version
+     * @param name local repository file name
+     */
+    static void downloadLib(String url, String path, String version, String name) {
+        File file = new File("${System.properties['user.home']}/.m2/repository/${path}/${version}/${name}")
+        file.parentFile.mkdirs()
+        if (!file.exists()) {
+            new URL(url).withInputStream { downloadStream ->
+                file.withOutputStream { fileOutputStream ->
+                    fileOutputStream << downloadStream
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns Java API specification link.
+     *
+     * @param currentJavaVersion current Java version
+     * @return Java API specification link
+     */
     static String getJavaAPISpecificationLink(String currentJavaVersion) {
         switch (currentJavaVersion) {
             case '1.5':
@@ -59,26 +104,10 @@ final class EasyDokkaUtils {
     }
 
     /**
-     * Downloads library and puts it to local repository.
+     * Checks Android or non-Android project.
      *
-     * @param url library url
-     * @param path local repository path
-     * @param version library version
-     * @param name local repository file name
+     * @return true if Android project, false otherwise
      */
-    void downloadLib(String url, String path, String version, String name) {
-        File file = new File("${System.properties['user.home']}/.m2/repository/${path}/${version}/${name}")
-        file.parentFile.mkdirs()
-        if (!file.exists()) {
-            new URL(url).withInputStream { downloadStream ->
-                file.withOutputStream { fileOutputStream ->
-                    fileOutputStream << downloadStream
-                }
-            }
-        }
-        project.files(file.absolutePath)
-    }
-
     boolean isAndroid() {
         return project.getPlugins().hasPlugin('com.android.application') ||
                 project.getPlugins().hasPlugin('com.android.library') ||
@@ -86,6 +115,11 @@ final class EasyDokkaUtils {
                 project.getPlugins().hasPlugin('android-library')
     }
 
+    /**
+     * Checks Kotlin or non-Kotlin project.
+     *
+     * @return true if Kotlin project, false otherwise
+     */
     boolean isKotlin() {
         return project.getPlugins().hasPlugin('kotlin') ||
                 project.getPlugins().hasPlugin('kotlin-platform-common') ||

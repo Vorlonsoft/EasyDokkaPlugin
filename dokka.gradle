@@ -26,27 +26,36 @@ afterEvaluate { project ->
     final String javaAPISpecificationLink = EasyDokkaUtils.getJavaAPISpecificationLink(JavaVersion.current().toString())
 
     task easyDokkaInitializer {
-        EasyDokkaUtils.with(project).downloadLib("https://jcenter.bintray.com/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.pom",
+        EasyDokkaUtils.downloadLib("https://jcenter.bintray.com/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.pom",
                 dokkaFatJarPath, dokkaFatJarVersion, "dokka-fatjar-${dokkaFatJarVersion}.pom")
-        EasyDokkaUtils.with(project).downloadLib("https://jcenter.bintray.com/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar",
+        EasyDokkaUtils.downloadLib("https://jcenter.bintray.com/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar",
                 dokkaFatJarPath, dokkaFatJarVersion, "dokka-fatjar-${dokkaFatJarVersion}.jar")
     }
 
     task dokkaJavadocsJar(type: GradleBuild) {
-        description 'Generate documentation by Dokka in Javadoc format.'
-        if (androidOs) {
-            tasks = ['androidEasyDokkaJar']
-        } else {
-            tasks = ['easyDokkaJar']
-        }
+        description 'Generates the documentation by Dokka in Javadoc or other formats.'
+        tasks = ['clean', 'easyDokkaJar']
     }
 
-    if (androidOs) {
-        task androidEasyDokka(type: Exec, dependsOn: easyDokkaInitializer) {
-            final byte srcDirsJavaNumber = (android.sourceSets.main.java.srcDirs != null) ? android.sourceSets.main.java.srcDirs.size() : 0
-            final byte srcDirsKotlinNumber = (kotlinLanguage && (android.sourceSets.main.kotlin.srcDirs != null)) ? android.sourceSets.main.kotlin.srcDirs.size() : 0
-            final byte classpathNumber = (android.getBootClasspath() != null) ? android.getBootClasspath().size() : 0
-            final String classpath = (classpathNumber > 0) ? android.getBootClasspath()[0] : ''
+    task easyDokka(type: Exec, dependsOn: easyDokkaInitializer) {
+        description 'Generates the documentation by Dokka.'
+        final byte srcDirsJavaNumber
+        final byte srcDirsKotlinNumber
+        final byte classpathNumber
+        final String classpath
+        final String srcDirOne
+        final String srcDirTwo
+        final String srcDirThree
+        final String links
+        if (androidOs) {
+            srcDirsJavaNumber = (android.sourceSets.main.java.srcDirs != null) ? android.sourceSets.main.java.srcDirs.size() : 0
+            srcDirsKotlinNumber = (kotlinLanguage && (android.sourceSets.main.kotlin.srcDirs != null)) ? android.sourceSets.main.kotlin.srcDirs.size() : 0
+            classpathNumber = (android.getBootClasspath() != null) ? android.getBootClasspath().size() : 0
+            classpath = (classpathNumber > 0) ? android.getBootClasspath()[0] : ''
+            srcDirOne = (srcDirsJavaNumber > 0) ? android.sourceSets.main.java.srcDirs[0] : ''
+            srcDirTwo = (srcDirsJavaNumber > 1) ? android.sourceSets.main.java.srcDirs[1] : ''
+            srcDirThree = (srcDirsKotlinNumber > 0) ? android.sourceSets.main.kotlin.srcDirs[0] : ''
+            links = "https://developer.android.com/reference/^${android.sdkDirectory}/docs/reference/^${javaAPISpecificationLink}"
             if (srcDirsJavaNumber > 0) {
                 mkdir android.sourceSets.main.java.srcDirs[0]
                 if (srcDirsJavaNumber > 1) {
@@ -56,30 +65,15 @@ afterEvaluate { project ->
             if (srcDirsKotlinNumber > 0) {
                 mkdir android.sourceSets.main.kotlin.srcDirs[0]
             }
-            if (srcDirsJavaNumber + srcDirsKotlinNumber > 0) {
-                commandLine 'java', '-jar',
-                        "${System.properties['user.home']}/.m2/repository/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar",
-                        (srcDirsJavaNumber > 0) ? android.sourceSets.main.java.srcDirs[0] : '',
-                        (srcDirsJavaNumber > 1) ? android.sourceSets.main.java.srcDirs[1] : '',
-                        (srcDirsKotlinNumber > 0) ? android.sourceSets.main.kotlin.srcDirs[0] : '',
-                        '-output', "${buildDir}/${dokkaOutputFormat}", '-format', dokkaOutputFormat,
-                        (classpathNumber > 0) ? '-classpath' : '', (classpathNumber > 0) ? classpath : '',
-                        '-links', "https://developer.android.com/reference/^${android.sdkDirectory}/docs/reference/^${javaAPISpecificationLink}"
-            } else {
-                commandLine 'java', '-jar',
-                        "${System.properties['user.home']}/.m2/repository/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar"
-            }
-        }
-
-        task androidEasyDokkaJar(type: Jar, dependsOn: androidEasyDokka) {
-            classifier = dokkaOutputFormat
-            destinationDir = buildDir
-            from "${buildDir}/${dokkaOutputFormat}"
-        }
-    } else {
-        task easyDokka(type: Exec, dependsOn: easyDokkaInitializer) {
-            final byte srcDirsJavaNumber = (sourceSets.main.java.srcDirs != null) ? sourceSets.main.java.srcDirs.size() : 0
-            final byte srcDirsKotlinNumber = (kotlinLanguage && (sourceSets.main.kotlin.srcDirs != null)) ? sourceSets.main.kotlin.srcDirs.size() : 0
+        } else {
+            srcDirsJavaNumber = (sourceSets.main.java.srcDirs != null) ? sourceSets.main.java.srcDirs.size() : 0
+            srcDirsKotlinNumber = (kotlinLanguage && (sourceSets.main.kotlin.srcDirs != null)) ? sourceSets.main.kotlin.srcDirs.size() : 0
+            classpathNumber = 0
+            classpath = ''
+            srcDirOne = (srcDirsJavaNumber > 0) ? sourceSets.main.java.srcDirs[0] : ''
+            srcDirTwo = (srcDirsJavaNumber > 1) ? sourceSets.main.java.srcDirs[1] : ''
+            srcDirThree = (srcDirsKotlinNumber > 0) ? sourceSets.main.kotlin.srcDirs[0] : ''
+            links = javaAPISpecificationLink
             if (srcDirsJavaNumber > 0) {
                 mkdir sourceSets.main.java.srcDirs[0]
                 if (srcDirsJavaNumber > 1) {
@@ -89,34 +83,50 @@ afterEvaluate { project ->
             if (srcDirsKotlinNumber > 0) {
                 mkdir sourceSets.main.kotlin.srcDirs[0]
             }
-            if (srcDirsJavaNumber + srcDirsKotlinNumber > 0) {
-                commandLine 'java', '-jar',
-                        "${System.properties['user.home']}/.m2/repository/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar",
-                        (srcDirsJavaNumber > 0) ? sourceSets.main.java.srcDirs[0] : '',
-                        (srcDirsJavaNumber > 1) ? sourceSets.main.java.srcDirs[1] : '',
-                        (srcDirsKotlinNumber > 0) ? sourceSets.main.kotlin.srcDirs[0] : '',
-                        '-output', "${buildDir}/${dokkaOutputFormat}", '-format', dokkaOutputFormat,
-                        '-links', javaAPISpecificationLink
-            } else {
-                commandLine 'java', '-jar',
-                        "${System.properties['user.home']}/.m2/repository/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar"
-            }
         }
+        if (srcDirsJavaNumber + srcDirsKotlinNumber > 0) {
+            commandLine 'java', '-jar',
+                    "${System.properties['user.home']}/.m2/repository/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar",
+                    srcDirOne, srcDirTwo, srcDirThree, '-output', "${buildDir}/${dokkaOutputFormat}", '-format', dokkaOutputFormat, '-links', links,
+                    (classpathNumber > 0) ? '-classpath' : '', (classpathNumber > 0) ? classpath : ''
+        } else {
+            commandLine 'java', '-jar',
+                    "${System.properties['user.home']}/.m2/repository/${dokkaFatJarPath}/${dokkaFatJarVersion}/dokka-fatjar-${dokkaFatJarVersion}.jar"
+        }
+    }
 
-        task easyDokkaJar(type: Jar, dependsOn: easyDokka) {
-            classifier = dokkaOutputFormat
-            destinationDir = buildDir
-            from "${buildDir}/${dokkaOutputFormat}"
-        }
+    task easyDokkaJar(type: Jar, dependsOn: easyDokka) {
+        description 'Archives the documentation created by Dokka.'
+        classifier = dokkaOutputFormat
+        destinationDir = buildDir
+        from "${buildDir}/${dokkaOutputFormat}"
     }
 }
 
+/**
+ * <p>EasyDokkaPlugin is a Gradle Script plugin to generate documentation by Dokka
+ * documentation engine in Javadoc or other formats for Java, Kotlin, Android and
+ * non-Android projects. It's very easy, you don't need to add to dependencies
+ * section additional classpath or think about compatibility issues, you don't
+ * need additional repositories also. </p>
+ * <p>EasyDokkaInitializer Class - class with EasyDokkaPlugin Gradle Script plugin initializers.</p>
+ *
+ * @author   Alexander Savin
+ * @since    1.1.0 Yokohama
+ */
 final class EasyDokkaInitializer {
 
     private EasyDokkaInitializer() {
         throw new AssertionError()
     }
 
+    /**
+     * Downloads Groovy Class source file
+     *
+     * @param url Groovy Class source file url
+     * @param name Groovy Class source file local repository name
+     * @return Groovy Class source file
+     */
     static File downloadGroovyClass(String url, String name) {
         File file = new File("${System.properties['user.home']}/.m2/repository/com/vorlonsoft/EasyDokkaPlugin/${name}")
         file.parentFile.mkdirs()

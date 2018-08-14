@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
+/**
+ * <p>EasyDokkaPlugin is a Gradle Script plugin to generate documentation by Dokka
+ * documentation engine in Javadoc or other formats for Java, Kotlin, Android and
+ * non-Android projects. It's very easy, you don't need to add to dependencies
+ * section additional classpath or think about compatibility issues, you don't
+ * need additional repositories also.</p>
+ * <p>EasyDokka Class - class with gradle properties getters, thread-safe and a fast singleton
+ * implementation.</p>
+ *
+ * @author   Alexander Savin
+ * @since    1.1.0 Yokohama
+ */
+
 final class EasyDokka {
 
     private static volatile EasyDokka singleton = null
@@ -24,6 +37,12 @@ final class EasyDokka {
         this.project = project
     }
 
+    /**
+     * Only method to get singleton object of EasyDokka Class
+     *
+     * @param project project
+     * @return thread-safe singleton
+     */
     static EasyDokka with(project) {
         if (singleton == null) {
             synchronized (EasyDokka.class) {
@@ -35,10 +54,22 @@ final class EasyDokka {
         return singleton
     }
 
+    /**
+     * Returns Dokka fatjar version
+     *
+     * @return DOKKA_FATJAR_VERSION gradle property value or "0.9.17" if project hasn't
+     * this property
+     */
     String getDokkaFatJarVersion() {
         return project.hasProperty('DOKKA_FATJAR_VERSION') ? project.DOKKA_FATJAR_VERSION : '0.9.17'
     }
 
+    /**
+     * Returns Dokka output format
+     *
+     * @return DOKKA_OUTPUT_FORMAT gradle property value or "javadoc" if project hasn't
+     * this property
+     */
     String getDokkaOutputFormat() {
         return project.hasProperty('DOKKA_OUTPUT_FORMAT') ? project.DOKKA_OUTPUT_FORMAT : 'javadoc'
     }

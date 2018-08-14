@@ -1,7 +1,7 @@
 EasyDokkaPlugin
 ===============
 
-Gradle Script plugin to generate documentation by Dokka documentation engine in Javadoc format for Java, Kotlin, Android and non-Android projects. It's very easy, you don't need to add to `dependencies` section additional `classpath` or think about compatibility issues, you don't need additional repositories also.
+Gradle Script plugin to generate documentation by Dokka documentation engine in Javadoc or other formats for Java, Kotlin, Android and non-Android projects. It's very easy, you don't need to add to `dependencies` section additional `classpath` or think about compatibility issues, you don't need additional repositories also.
 
 ## Usage
 
@@ -44,10 +44,10 @@ There are optional properties which can be set:
 #### Dokka fatjar version
 
 ```properties
-DOKKA_FATJAR_VERSION (default is ${latestVersion})
+DOKKA_FATJAR_VERSION (default is "0.9.17")
 ```
 
-${latestVersion} is 0.9.17
+${latestVersion} is ![Dokka fatjar latest version](https://api.bintray.com/packages/kotlin/dokka/dokka/images/download.svg)
 
 #### Dokka output format
 
@@ -55,7 +55,7 @@ ${latestVersion} is 0.9.17
 DOKKA_OUTPUT_FORMAT (default is "javadoc")
 ```
 
-**Options:**
+Options:
 
   * `html` - minimalistic html format used by default
   * `javadoc` - Dokka mimic to javadoc
