@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+Class EasyDokka = new GroovyClassLoader(getClass().getClassLoader()).parseClass(EasyDokkaInitializer.downloadGroovyClass('https://raw.github.com/Vorlonsoft/EasyDokkaPlugin/master/EasyDokka.groovy', 'EasyDokka.groovy'))
 Class EasyDokkaUtils = new GroovyClassLoader(getClass().getClassLoader()).parseClass(EasyDokkaInitializer.downloadGroovyClass('https://raw.github.com/Vorlonsoft/EasyDokkaPlugin/master/EasyDokkaUtils.groovy', 'EasyDokkaUtils.groovy'))
 
 afterEvaluate { project ->
     final boolean androidOs = EasyDokkaUtils.with(project).isAndroid()
     final boolean kotlinLanguage = EasyDokkaUtils.with(project).isKotlin()
-    final String dokkaFatJarVersion = '0.9.17'
+    final String dokkaFatJarVersion = EasyDokka.with(project).getDokkaFatJarVersion()
     final String dokkaFatJarPath = 'org/jetbrains/dokka/dokka-fatjar'
     final String javaAPISpecificationLink = EasyDokkaUtils.getJavaAPISpecificationLink(JavaVersion.current().toString())
 
