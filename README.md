@@ -36,6 +36,7 @@ Create project root `gradle.properties`. You may already have this file, in whic
 
 ```properties
 DOKKA_FATJAR_VERSION = 0.9.17
+DOKKA_OUTPUT_FORMAT = javadoc
 ```
 
 There are optional properties which can be set:
@@ -44,6 +45,12 @@ There are optional properties which can be set:
 
 ```properties
 DOKKA_FATJAR_VERSION (default is "0.9.17")
+```
+
+#### Dokka output format
+
+```properties
+DOKKA_OUTPUT_FORMAT (default is "javadoc")
 ```
 
 ## Our other pligins

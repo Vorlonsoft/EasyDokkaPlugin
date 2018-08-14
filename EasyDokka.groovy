@@ -38,4 +38,8 @@ final class EasyDokka {
     String getDokkaFatJarVersion() {
         return project.hasProperty('DOKKA_FATJAR_VERSION') ? project.DOKKA_FATJAR_VERSION : '0.9.17'
     }
+
+    String getDokkaOutputFormat() {
+        return project.hasProperty('DOKKA_OUTPUT_FORMAT') ? project.DOKKA_OUTPUT_FORMAT : 'javadoc'
+    }
 }
