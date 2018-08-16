@@ -19,10 +19,10 @@
          default="main"
          basedir=".">
     <taskdef name="groovydoc"
-             classname="org.codehaus.groovy.ant.Groovydoc" />
+             classname="org.codehaus.groovy.ant.Groovydoc"/>
     <target name="generategroovydoc"
             description="Generate Groovydoc-based documentation">
-        <mkdir dir="groovydoc" />
+        <mkdir dir="groovydoc"/>
         <groovydoc destdir="groovydoc"
                    sourcepath="."
                    packagenames="**.*"

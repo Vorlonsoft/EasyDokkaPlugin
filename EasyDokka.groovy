@@ -23,9 +23,9 @@
  * <p>EasyDokka Class - class with gradle properties getters, thread-safe and a fast singleton
  * implementation.</p>
  *
- * @author   Alexander Savin
- * @version  1.1.0 Yokohama
- * @since    1.1.0 Yokohama
+ * @author Alexander Savin
+ * @version 1.1.0 Yokohama
+ * @since 1.1.0 Yokohama
  */
 
 final class EasyDokka {

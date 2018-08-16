@@ -23,9 +23,9 @@
  * <p>EasyDokkaUtils Class - utility class, thread-safe and a fast singleton
  * implementation.</p>
  *
- * @author   Alexander Savin
- * @version  1.1.0 Yokohama
- * @since    1.1.0 Yokohama
+ * @author Alexander Savin
+ * @version 1.1.0 Yokohama
+ * @since 1.1.0 Yokohama
  */
 
 final class EasyDokkaUtils {

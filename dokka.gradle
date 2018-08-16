@@ -21,9 +21,9 @@
  * section additional classpath or think about compatibility issues, you don't
  * need additional repositories also.</p>
  *
- * @author   Alexander Savin
- * @version  1.1.0 Yokohama
- * @since    1.0.0 Tokyo
+ * @author Alexander Savin
+ * @version 1.1.0 Yokohama
+ * @since 1.0.0 Tokyo
  */
 
 Class EasyDokka = new GroovyClassLoader(getClass().getClassLoader()).parseClass(EasyDokkaInitializer.downloadGroovyClass('https://raw.github.com/Vorlonsoft/EasyDokkaPlugin/master/EasyDokka.groovy', 'EasyDokka.groovy'))
@@ -60,9 +60,9 @@ afterEvaluate { project ->
         final String srcDirThree
         final String links
         if (androidOs) {
-            srcDirsJavaNumber = (android.sourceSets.main.java.srcDirs != null) ? android.sourceSets.main.java.srcDirs.size() : 0
-            srcDirsKotlinNumber = (kotlinLanguage && (android.sourceSets.main.kotlin.srcDirs != null)) ? android.sourceSets.main.kotlin.srcDirs.size() : 0
-            classpathNumber = (android.getBootClasspath() != null) ? android.getBootClasspath().size() : 0
+            srcDirsJavaNumber = (byte) ((android.sourceSets.main.java.srcDirs != null) ? android.sourceSets.main.java.srcDirs.size() : 0)
+            srcDirsKotlinNumber = (byte) ((kotlinLanguage && (android.sourceSets.main.kotlin.srcDirs != null)) ? android.sourceSets.main.kotlin.srcDirs.size() : 0)
+            classpathNumber = (byte) ((android.getBootClasspath() != null) ? android.getBootClasspath().size() : 0)
             classpath = (classpathNumber > 0) ? android.getBootClasspath()[0] : ''
             srcDirOne = (srcDirsJavaNumber > 0) ? android.sourceSets.main.java.srcDirs[0] : ''
             srcDirTwo = (srcDirsJavaNumber > 1) ? android.sourceSets.main.java.srcDirs[1] : ''
@@ -78,8 +78,8 @@ afterEvaluate { project ->
                 mkdir android.sourceSets.main.kotlin.srcDirs[0]
             }
         } else {
-            srcDirsJavaNumber = (sourceSets.main.java.srcDirs != null) ? sourceSets.main.java.srcDirs.size() : 0
-            srcDirsKotlinNumber = (kotlinLanguage && (sourceSets.main.kotlin.srcDirs != null)) ? sourceSets.main.kotlin.srcDirs.size() : 0
+            srcDirsJavaNumber = (byte) ((sourceSets.main.java.srcDirs != null) ? sourceSets.main.java.srcDirs.size() : 0)
+            srcDirsKotlinNumber = (byte) ((kotlinLanguage && (sourceSets.main.kotlin.srcDirs != null)) ? sourceSets.main.kotlin.srcDirs.size() : 0)
             classpathNumber = 0
             classpath = ''
             srcDirOne = (srcDirsJavaNumber > 0) ? sourceSets.main.java.srcDirs[0] : ''
@@ -123,9 +123,9 @@ afterEvaluate { project ->
  * need additional repositories also.</p>
  * <p>EasyDokkaInitializer Class - class with EasyDokkaPlugin Gradle Script plugin initializers.</p>
  *
- * @author   Alexander Savin
- * @version  1.1.0 Yokohama
- * @since    1.1.0 Yokohama
+ * @author Alexander Savin
+ * @version 1.1.0 Yokohama
+ * @since 1.1.0 Yokohama
  */
 final class EasyDokkaInitializer {
 
