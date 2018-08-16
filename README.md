@@ -20,7 +20,7 @@ apply from: 'https://raw.github.com/Vorlonsoft/EasyDokkaPlugin/master/dokka.grad
 
 ### 3. Generate documentation
 
-You can now generate documentation by Dokka documentation engine in Javadoc format:
+You can now generate documentation by Dokka documentation engine in Javadoc or other formats:
 
 ```bash
 $ gradle dokkaJavadocsJar
@@ -32,7 +32,7 @@ Get generated documentation from `${buildDir}` directory.
 
 ### Optional properties
 
-Create project root `gradle.properties`. You may already have this file, in which case just edit the original. This file should contain the properties values which are common to all of your sub-projects (if you have any). The values in the sub-project `gradle.properties` file are specific to the sub-project (and override those in the root `gradle.properties`). Example:
+Create project root `gradle.properties`. You may already have this file, in which case just edit the original. This file should contain the properties values which are common to all of your sub-projects (if you have any). The values in the sub-project `gradle.properties` file are specific to the sub-project (and override those in the root `gradle.properties`). For instance, here's [AndroidRate's](https://github.com/Vorlonsoft/AndroidRate):
 
 ```properties
 DOKKA_FATJAR_VERSION = 0.9.17
@@ -65,9 +65,15 @@ Options:
     * `jekyll` - Jekyll compatible markdown
   * `kotlin-website` - internal format used for documentation on *kotlinlang.org*
 
+## Already in use in following libraries
+
+* [AndroidRate library](https://github.com/Vorlonsoft/AndroidRate)
+
+* ...
+
 ## Our other pligins
 
-[GradleMavenPush](https://github.com/Vorlonsoft/GradleMavenPush) - helper to upload Gradle Android Artifacts, Gradle Java Artifacts and Gradle Kotlin Artifacts to Maven repositories (JCenter, Maven Central, Corporate staging/snapshot servers and local Maven repositories)
+[GradleMavenPush](https://github.com/Vorlonsoft/GradleMavenPush) - helper to upload Gradle Android Artifacts, Gradle Java Artifacts and Gradle Kotlin Artifacts to Maven repositories (JCenter, Maven Central, Corporate staging/snapshot servers and local Maven repositories).
 
 ## Contribute
 
