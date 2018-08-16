@@ -23,6 +23,8 @@ Thumbs.db
 
 # IntelliJ
 .idea/
+## Module files
+*.iml
 
 # Other
 TODO.md

@@ -24,6 +24,7 @@
  * implementation.</p>
  *
  * @author   Alexander Savin
+ * @version  1.1.0 Yokohama
  * @since    1.1.0 Yokohama
  */
 
