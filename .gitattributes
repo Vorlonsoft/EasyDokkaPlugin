@@ -1,1 +1,2 @@
 groovydoc/* linguist-documentation
+dokka.gradle linguist-detectable=true
