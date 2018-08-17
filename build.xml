@@ -34,7 +34,7 @@
                    overview="override.html"
                    private="false"
                    extensions=".groovy:.gradle">
-            <link packages="java.,org.xml.,javax.,org.xml."
+            <link packages="java.,org.xml.,javax."
                   href="https://docs.oracle.com/javase/8/docs/api/"/>
             <link packages="groovy.,org.codehaus.groovy."
                   href="http://docs.groovy-lang.org/latest/html/api/"/>
