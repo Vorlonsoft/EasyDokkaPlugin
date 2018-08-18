@@ -112,6 +112,9 @@ final class EasyDokkaUtils {
     boolean isAndroid() {
         return project.getPlugins().hasPlugin('com.android.application') ||
                 project.getPlugins().hasPlugin('com.android.library') ||
+                project.getPlugins().hasPlugin('com.android.feature') ||
+                project.getPlugins().hasPlugin('com.android.dynamic-feature') ||
+                project.getPlugins().hasPlugin('com.android.instantapp') ||
                 project.getPlugins().hasPlugin('android') ||
                 project.getPlugins().hasPlugin('android-library')
     }
