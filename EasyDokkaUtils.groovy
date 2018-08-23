@@ -15,17 +15,12 @@
  */
 
 /**
- * <p>EasyDokkaPlugin is a Gradle Script plugin to generate documentation by Dokka
- * documentation engine in Javadoc or other formats for Java, Kotlin, Android and 
- * non-Android projects. It's very easy, you don't need to add to dependencies 
- * section additional classpath or think about compatibility issues, you don't 
- * need additional repositories also.</p>
  * <p>EasyDokkaUtils Class - utility class, thread-safe and a fast singleton
  * implementation.</p>
  *
- * @author Alexander Savin
- * @version 1.1.0 Yokohama
  * @since 1.1.0 Yokohama
+ * @version 1.1.0 Yokohama
+ * @author Alexander Savin
  */
 
 final class EasyDokkaUtils {
