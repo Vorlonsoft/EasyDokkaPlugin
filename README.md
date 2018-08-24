@@ -1,5 +1,5 @@
 EasyDokkaPlugin
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-EasyDokkaPlugin-brightgreen.svg?style=flat)](#)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-EasyDokkaPlugin-brightgreen.svg?style=flat)]()
 [![Latest Version](https://api.bintray.com/packages/vorlonsoft/VorlonsoftCentral/EasyDokkaPlugin/images/download.svg)](https://github.com/Vorlonsoft/EasyDokkaPlugin/releases)
 ===============
 
@@ -49,7 +49,7 @@ There are optional properties which can be set:
 DOKKA_FATJAR_VERSION (default is "0.9.17")
 ```
 
-${latestVersion} is ![Dokka fatjar latest version](https://api.bintray.com/packages/kotlin/dokka/dokka/images/download.svg)
+${latestVersion} is [![Dokka fatjar latest version](https://api.bintray.com/packages/kotlin/dokka/dokka/images/download.svg)]()
 
 #### Dokka output format
 
