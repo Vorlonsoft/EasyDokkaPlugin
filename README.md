@@ -66,7 +66,7 @@ Options:
 
 ## Groovydoc documentation
 
-See [EasyDokkaPlugin GitHub Pages](https://vorlonsoft.github.io/EasyDokkaPlugin/groovydoc/)
+See [EasyDokkaPlugin documentation](https://vorlonsoft.github.io/EasyDokkaPlugin/groovydoc/)
 
 ## Already in use in following libraries
 
