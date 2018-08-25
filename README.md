@@ -1,7 +1,4 @@
-EasyDokkaPlugin
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-EasyDokkaPlugin-brightgreen.svg?style=flat)](#)
-[![Latest Version](https://api.bintray.com/packages/vorlonsoft/VorlonsoftCentral/EasyDokkaPlugin/images/download.svg)](https://github.com/Vorlonsoft/EasyDokkaPlugin/releases)
-===============
+# EasyDokkaPlugin [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-EasyDokkaPlugin-brightgreen.svg?style=flat)](#) [![Latest Version](https://api.bintray.com/packages/vorlonsoft/VorlonsoftCentral/EasyDokkaPlugin/images/download.svg)](https://github.com/Vorlonsoft/EasyDokkaPlugin/releases)
 
 Gradle Script plugin to generate documentation by Dokka documentation engine in Javadoc or other formats for Java, Kotlin, Android and non-Android projects. It's very easy, you don't need to add to `dependencies` section additional `classpath` or think about compatibility issues, you don't need additional repositories also.
 
@@ -66,6 +63,10 @@ Options:
     * `gfm` - GitHub flavored markdown
     * `jekyll` - Jekyll compatible markdown
   * `kotlin-website` - internal format used for documentation on *kotlinlang.org*
+
+## Groovydoc documentation
+
+See [EasyDokkaPlugin GitHub Pages](https://vorlonsoft.github.io/EasyDokkaPlugin/groovydoc/)
 
 ## Already in use in following libraries
 
