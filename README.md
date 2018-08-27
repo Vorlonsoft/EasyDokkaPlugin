@@ -2,6 +2,20 @@
 
 Gradle Script plugin to generate documentation by Dokka documentation engine in Javadoc or other formats for Java, Kotlin, Android and non-Android projects. It's very easy, you don't need to add to `dependencies` section additional `classpath` or think about compatibility issues, you don't need additional repositories also.
 
+## Contents
+
+* [Usage](#usage)
+  * [1. Have a working Gradle build](#1-have-a-working-gradle-build)
+  * [2. Call the Script](#2-call-the-script)
+  * [3. Generate documentation](#3-generate-documentation)
+  * [4. Get documentation](#4-get-documentation)
+* [Optional properties](#optional-properties)
+* [Groovydoc documentation](#groovydoc-documentation)
+* [Already in use](#already-in-use-in-following-libraries)
+* [Other pligins](#our-other-pligins)
+* [Contribute](#contribute)
+* [License](#license)
+
 ## Usage
 
 ### 1. Have a working Gradle build
