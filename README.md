@@ -12,7 +12,7 @@ Gradle Script plugin to generate documentation by Dokka documentation engine in 
 * [Optional properties](#optional-properties)
 * [Groovydoc documentation](#groovydoc-documentation)
 * [Already in use](#already-in-use-in-following-libraries)
-* [Other pligins](#our-other-pligins)
+* [Other plugins](#our-other-plugins)
 * [Contribute](#contribute)
 * [License](#license)
 
@@ -88,7 +88,7 @@ See [EasyDokkaPlugin documentation](https://vorlonsoft.github.io/EasyDokkaPlugin
 
 * ...
 
-## Our other pligins
+## Our other plugins
 
 [GradleMavenPush](https://github.com/Vorlonsoft/GradleMavenPush) - helper to upload Gradle Android Artifacts, Gradle Java Artifacts and Gradle Kotlin Artifacts to Maven repositories (JCenter, Maven Central, Corporate staging/snapshot servers and local Maven repositories).
 
